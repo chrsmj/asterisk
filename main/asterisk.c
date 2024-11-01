@@ -1118,6 +1118,10 @@ void ast_unreplace_sigchld(void)
 	unsigned int level;
 
 	ast_mutex_lock(&safe_system_lock);
+
+	/* Wrapping around here is an error */
+	ast_assert(safe_system_level > 0);
+
 	level = --safe_system_level;
 
 	/* only restore the handler if we are the last one */
@@ -4340,7 +4344,7 @@ static void asterisk_daemon(int isroot, const char *runuser, const char *rungrou
 	if (ast_opt_console) {
 		/* Console stuff now... */
 		/* Register our quit function */
-		char title[256];
+		char title[296];
 		char hostname[MAXHOSTNAMELEN] = "";
 
 		if (gethostname(hostname, sizeof(hostname) - 1)) {
